@@ -1,0 +1,14 @@
+{
+  "name": "kaicodex",
+  "version": "1.0.0",
+  "description": "kai encryption scrapper",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "amarullz",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "webcrack": "^2.15.1"
+  }
+}
