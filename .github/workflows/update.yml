@@ -1,6 +1,6 @@
 name: Update
 on: 
-schedule:
+  schedule:
     - cron: '5 */3 * * *'
 
 permissions:
