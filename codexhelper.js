@@ -123,4 +123,6 @@ const codexhelper = {
     }
 };
 
-module.exports = codexhelper;
+// module.exports = codexhelper;
+export default codexhelper;
+
