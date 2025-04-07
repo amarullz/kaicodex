@@ -77,6 +77,7 @@ async function decodex(jsurl) {
     let codex_code_end = codex_code.indexOf("{}],");
     codex_code = codex_code.substring(0, codex_code_end).trim();
     codex_code = codex_code.substring(0, codex_code.length - 1).trim();
+    codex_code = bracketLimit(codex_code);
 
     /* split internal functions */
     let funcs = codex_code.split(/function (?=[a-zA-Z])/);
