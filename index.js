@@ -67,7 +67,7 @@ async function get_kai_home() {
 /* get episodes from anime id */
 async function get_kai_episodes(codex,id) {
     try{
-        let url=url_kai_base+"/ajax/episodes/list?ani_id="+encodeURIComponent(id)+"&_="+codexhelper.codexed(codex.encrypt, id);
+        let url=url_kai_base+"/ajax/episodes/list?ani_id="+encodeURIComponent(id)+"&_="+codex.e(id);
         console.log("Fetching Episodes: " + url);
         const response = await fetch(url);
         if (!response.ok) {
@@ -85,7 +85,7 @@ async function get_kai_episodes(codex,id) {
             });
 
             for (let i=0;i<token.length;i++){
-                let epUrl=url_kai_base+"/ajax/links/list?token="+encodeURIComponent(token[i])+"&_="+codexhelper.codexed(codex.encrypt,token[i]);
+                let epUrl=url_kai_base+"/ajax/links/list?token="+encodeURIComponent(token[i])+"&_="+codex.e(token[i]);
                 console.log("Fetching Episode: " + epUrl);
                 const resEp = await fetch(epUrl);
                 if (resEp.ok){
@@ -114,7 +114,7 @@ async function get_kai_episodes(codex,id) {
 /* get episodes server */
 async function get_kai_stream(codex,lid) {
     try{
-        let url=url_kai_base+"/ajax/links/view?id="+encodeURIComponent(lid)+"&_="+codexhelper.codexed(codex.encrypt, lid);
+        let url=url_kai_base+"/ajax/links/view?id="+encodeURIComponent(lid)+"&_="+codex.e(lid);
         console.log("Fetching Kai Stream: " + url);
         const response = await fetch(url);
         if (!response.ok) {
@@ -125,7 +125,7 @@ async function get_kai_stream(codex,lid) {
             return null;
         }
         if (data.status==200){
-            let out=JSON.parse(codexhelper.codexed(codex.decrypt,data.result));
+            let out=JSON.parse(codex.d(data.result));
             return out;
         }
     }catch(e){
@@ -171,21 +171,33 @@ if (!kaihome){
     process.exit(1);
 }
 
+// https://megaup.cc/assets/megaup/min/app.js?v=19660b5864c
+
 /* generate codex */
-let kaicodex=await decodex(kaihome.bundle);
+let kaicodex=await decodex(kaihome.bundle, true);
 if (!kaicodex){
     console.log("No Kai codex generated!");
+    process.exit(1);
+}
+
+/* evaluate kai home encode/decoder function */
+var kaifn = null;
+try{
+    eval("kaifn = (function"+kaicodex+")();");
+}
+catch(e){
+    console.log("kaifn is invalid function!");
     process.exit(1);
 }
 
 let megaurl=null;
 /* get episodes servers */
 for (let i=0;i<kaihome.ids.length;i++){
-    let lid=await get_kai_episodes(kaicodex,kaihome.ids[0]);
+    let lid=await get_kai_episodes(kaifn,kaihome.ids[0]);
     if (lid){
         let ret=null;
         for (let j=0;j<lid.length;j++){
-            ret=await get_kai_stream(kaicodex,lid[i]);
+            ret=await get_kai_stream(kaifn,lid[i]);
             if (ret){
                 break;
             }
@@ -218,7 +230,8 @@ if (!megacodex){
 
 /* Bundle Codex */
 let allCodex={
-    kai:kaicodex,
+    kai:null,
+    kaihome:kaicodex,
     megaup:megacodex
 };
 
@@ -227,6 +240,7 @@ fs.writeFileSync("./generated/kai_codex.json",JSON.stringify(allCodex));
 
 console.log("Generating KaiCodex JS Class...");
 let template=`const KAICODEX = {
+  homefn:(function`+kaicodex+`)(),
   rc4: function (key, str) {
     var s = [], j = 0, x, res = '';
     for (var i = 0; i < 256; i++) {
@@ -265,8 +279,8 @@ let template=`const KAICODEX = {
     while (i-- && (m[f[i]] = r[i])) { }
     return s.split("").map(v => m[v] || v).join('');
   },
-  enc(n) { `+codexhelper.codex_fn(kaicodex.encrypt)+` },
-  dec(n) { `+codexhelper.codex_fn(kaicodex.decrypt)+` },
+  enc(n) { return KAICODEX.homefn.e(n); },
+  dec(n) { return KAICODEX.homefn.d(n); },
   decMega(n) { `+codexhelper.codex_fn(megacodex.decrypt)+` }
 };
 `;

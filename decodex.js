@@ -19,6 +19,7 @@
  *
  */
 import { webcrack } from 'webcrack';
+import fs from 'fs';
 
 /* Limit to bracket pairs */
 function bracketLimit(fn) {
@@ -42,7 +43,7 @@ function bracketLimit(fn) {
 }
 
 /* Get encryption logic & keys */
-async function decodex(jsurl) {
+async function decodex(jsurl, ishome, savedec) {
     console.log("Fetching: " + jsurl);
     const response = await fetch(jsurl);
     const data = await response.text();
@@ -51,6 +52,10 @@ async function decodex(jsurl) {
     const result = await webcrack(data);
     console.log("Webcrack finished!");
     console.log("Cracked Code length: " + result.code.length + " bytes");
+
+    if (savedec){
+        fs.writeFileSync(savedec,result.code);
+    }
 
     /* get atob location */
     let atob_pos = result.code.indexOf("atob(");
@@ -80,10 +85,11 @@ async function decodex(jsurl) {
     codex_code = bracketLimit(codex_code);
 
     /* split internal functions */
-    let funcs = codex_code.split(/function (?=[a-zA-Z])/);
+    let funcs = codex_code.split(/function (?=[^\()])/);
 
     /* detect functions types */
     let fnarr = {};
+    let homeFuncs=[];
     let encryptFn = null;
     let decryptFn = null;
     let hasreverse = false;
@@ -91,15 +97,22 @@ async function decodex(jsurl) {
         let fn = bracketLimit(funcs[i]);
         let fnargpos = fn.indexOf("(");
         let fnames = fn.substring(0, fnargpos).trim();
+        let bfnames = fn.substring(0, fn.indexOf(")")+1).trim();
         let ftype = null;
+        let fnsplit = fn.split('\n');
+        let homed=false;
         if ((fn.indexOf("256") !== -1) && (fn.indexOf("charCodeAt") !== 1)) {
             ftype = "rc4";
         }
         else if (fn.indexOf("atob") !== -1) {
             ftype = "safeb64_decode";
+            homeFuncs.push('function '+fn);
+            homed=true;
         }
         else if (fn.indexOf("btoa") !== -1) {
             ftype = "safeb64_encode";
+            homeFuncs.push('function '+fn);
+            homed=true;
         }
         else if (fn.indexOf(".map(") !== -1) {
             ftype = "substitute";
@@ -128,12 +141,28 @@ async function decodex(jsurl) {
             fn = fn.replace(decodeFn + "(", "urldecode(");
             decryptFn = fnames;
         }
+        if (!homed && (fnsplit.length==3)){
+            homeFuncs.push('function '+bfnames+'{ return '+(fnsplit[1].replace('return','').trim())+'}');
+            homed=true;
+        }
         if (ftype && fnames) {
             let fnvalue = "function " + ftype + fn.substring(fnargpos).trim();
             eval('fnarr[fnames]={fn:function' + fn.substring(fnargpos).trim() + '};');
             fnarr[fnames].type = ftype;
             fnarr[fnames].code = fnvalue;
         }
+    }
+
+    if (ishome){
+        let outscript = 
+            '(){\n'+
+                'var urlencode=encodeURIComponent;\n'+
+                'var urldecode=decodeURIComponent;\n'+
+                homeFuncs.join('\n')+
+                (fnarr[decryptFn].code.replaceAll(/([A-Za-z0-9_$]+)\.fromCharCode/g,'String.fromCharCode'))+'\n'+
+                (fnarr[encryptFn].code.replaceAll(/([A-Za-z0-9_$]+)\.fromCharCode/g,'String.fromCharCode'))+'\n'+
+            'return { d:decrypt$, e:encrypt$ };\n}';
+        return outscript;
     }
 
     /* function hook */
