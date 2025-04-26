@@ -1,7 +1,9 @@
 name: Update
 on: 
-  schedule:
-    - cron: '5 */3 * * *'
+  workflow_dispatch
+# on: 
+#   schedule:
+#     - cron: '5 */3 * * *'
 
 permissions:
     contents: write
