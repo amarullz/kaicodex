@@ -81,11 +81,11 @@ const KAICODEX = {
   enc(n) { return KAICODEX.homefn.e(n); },
   dec(n) { return KAICODEX.homefn.d(n); },
   decMega(n) {
-    var a = KAICODEX.safeAtob;
-    var b = KAICODEX.rc4;
-    var c = KAICODEX.replaceChars;
-    var d = KAICODEX.reverseString;
-    var e = KAICODEX.safeBtoa;
-    return decodeURIComponent(d(b("kupXzAFLo8", a(c(d(b("BQuRgrMYmw58", a(c(c(d(b("Vp0cEj9oebuS4nZ", a(a(n)))), "ihAyqmWjYJlfM", "AWmqjYlMhJify"), "qOiv0S5Ew3sYK", "3qiOYsS5EvKw0")))), "HhJo8XcYGUr", "JHUocrhGXY8")))));
+    var B=KAICODEX.safeAtob;
+    var y = KAICODEX.rc4;
+    var L = KAICODEX.replaceChars;
+    var z = KAICODEX.reverseString;
+    n = y('5JuOqt6PZH', B(z(L(z(L(y('gYXmZMti3aW7', B(z(L(y('VA3Y4Qj1DB', B(B(n))), 'cnifqMFatTbg', 'niMFfctgqbTa')))), 'nhdEm2PHjwO5', '5HPwnOmdhjE2')), 'bYPIshuCg3DN', '3ubICsgNhDYP'))));
+    return decodeURIComponent(n);
   }
 };
