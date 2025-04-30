@@ -66,20 +66,20 @@ const KAICODEX = {
   enc(n) { return KAICODEX.homefn.e(n); },
   dec(n) { return KAICODEX.homefn.d(n); },
   decMega(n) {
-    var y = KAICODEX.safeAtob;
+    var i = KAICODEX.safeAtob;
     var L = KAICODEX.rc4;
-    var h = KAICODEX.replaceChars;
-    var d = KAICODEX.reverseString;
-    var f = "VqpwDoI1LAkM3",
-      b = "VJh1gxvzdU",
-      k = "LyMBel91z3U4",
-      s = "KZlxnIVgYbrzpL",
-      o = "IbYKVZpglLzrxn",
-      nn = "MuBLtJnrjC3",
-      a = "JnrLB3MCtju",
-      u = "P21D4796aB",
-      v = "4a9B16D27P";
-    n = L(f, y(d(h(d(h(L(b, y(h(d(L(k, y(y(n)))), s, o))), nn, a)), u, v))));
+    var t = KAICODEX.replaceChars;
+    var u = KAICODEX.reverseString;
+    var h="3BqOnxGhQv",
+      s="WPUVliQX7b9",
+      f="8AqSMtvQwu",
+      g="kw82Kupm07Dlca",
+      y="a20puk8lm7DKcw",
+      k="pFAymC6OTU",
+      d="mTAFpCO6yU",
+      l="q4Gt9OYkXT28jm7",
+      b="kYj879T4m2XGOqt";
+    n = u(t(L(h, i(t(u(L(s, i(L(f, i(u(t(i(n), g, y))))))), k, d))), l, b));
     return decodeURIComponent(n);
   }
 };
