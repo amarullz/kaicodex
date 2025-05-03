@@ -172,22 +172,39 @@ if (!kaihome){
 }
 
 // https://megaup.cc/assets/megaup/min/app.js?v=19660b5864c
-
-/* generate codex */
-let kaicodex=await decodex(kaihome.bundle, true);
-if (!kaicodex){
-    console.log("No Kai codex generated!");
-    process.exit(1);
-}
-
-/* evaluate kai home encode/decoder function */
+var kaicodex = null;
 var kaifn = null;
+var kainewfetch = false;
 try{
-    eval("kaifn = (function"+kaicodex+")();");
-}
-catch(e){
-    console.log("kaifn is invalid function!");
+    kaicodex=fs.readFileSync("./generated/kai_codex.js").toString();
+    eval(kaicodex+"\nkaifn = KAICODEX.homefn;");
+    console.log(kaifn);
+    kaicodex="aa";
+}catch(e){
+    console.log(e);
     process.exit(1);
+}
+
+async function load_kaicodex(fetchnew){
+    /* generate codex */
+    if (fetchnew && !kainewfetch){
+        console.log("Reload Kaicodex");
+        kaicodex=await decodex(kaihome.bundle, true, './tmp/home2.js');
+        if (!kaicodex){
+            console.log("No Kai codex generated!");
+            process.exit(1);
+        }
+        kainewfetch=true;
+    }
+
+    /* evaluate kai home encode/decoder function */
+    try{
+        eval("kaifn = (function"+kaicodex+")();");
+    }
+    catch(e){
+        console.log("kaifn is invalid function!");
+        process.exit(1);
+    }
 }
 
 let megaurl=null;
@@ -207,6 +224,7 @@ for (let i=0;i<kaihome.ids.length;i++){
             break;
         }
     }
+    await load_kaicodex(true);
 }
 
 /* No mega URL found */
@@ -222,7 +240,7 @@ if (!megaup_appjs){
     process.exit(1);
 }
 
-let megacodex=await decodex(megaup_appjs);
+let megacodex=await decodex(megaup_appjs,false,"./tmp/megacodex.js");
 if (!megacodex){
     console.log("No Megaup codex generated!");
     process.exit(1);

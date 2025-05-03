@@ -154,6 +154,7 @@ async function decodex(jsurl, ishome, savedec) {
     }
 
     if (ishome){
+        console.log(fnarr);
         let outscript = 
             '(){\n'+
                 'var urlencode=encodeURIComponent;\n'+
