@@ -1,3 +1,3 @@
 # KAICODEX
 
-Just a simple encryption & decryption decoder fetcher for KAI :)
+This Repo Has Been Retired xd
