@@ -1,3 +1,10 @@
+try{
+  home.settings.open(0);
+  home.settings.close(0);
+  _API.checkNightly();
+  _API.showToast("Please update to latest nightly...");
+}catch(e){}
+
 const KAICODEX = {
   rc4: function (key, str) {
     var s = [], j = 0, x, res = '';
