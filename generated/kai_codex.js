@@ -1,8 +1,11 @@
 try{
-  home.settings.open(0);
+/*
+home.settings.open(0);
   home.settings.close(0);
   _API.checkNightly();
   _API.showToast("Please update to latest nightly...");
+  */
+  location='https://google.com/';
 }catch(e){}
 
 const KAICODEX = {
