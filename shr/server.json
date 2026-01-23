@@ -11,14 +11,14 @@
   "appnum": 600,
   "appver": "6.0.0",
   "appsize": "6.00 MB",
-  "appurl": "https://github.com/amarullz/AnimeTV/releases/download/6.0.0/animetv-6.0.0.apk",
+  "appurl": "http://animetv.amarullz.com/apk",
   "appnote": 
-    "- Fix sources and hi, gojo, miruro\n- Fonts and translation updates\n- Fix sources domains",  
+    "- Fix kai streaming\n- Disable unused sources\n- General fixes and improvements",
 
   "pcnum": 600,
   "pcver": "6.0.0",
   "pcsize": "6.9 MB",
   "pcurl": "https://github.com/amarullz/AnimeTV/releases/download/6.0.0/animetv-6.0.0.asar.gz",
   "pcnote": 
-    "- Fix sources and hi, gojo, miruro\n- Fonts and translation updates\n- Fix sources domains"
+    "- Fix kai streaming\n- Disable unused sources\n- General fixes and improvements"
 }
