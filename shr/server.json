@@ -8,12 +8,12 @@
   "stream_domain2": "megaf.cc",
   "update": "1.1-240624",
 
-  "appnum": 650,
-  "appver": "6.5.0",
+  "appnum": 666,
+  "appver": "6.6.6",
   "appsize": "6.01 MB",
-  "appurl": "https://github.com/amarullz/kaicodex/releases/download/650/650apk",
+  "appurl": "https://github.com/amarullz/kaicodex/releases/download/666/666apk",
   "appnote": 
-    "- Fix kai streaming\n- Disable unused sources\n- General fixes and improvements",
+    "- Fix kai domains\n- Change HiAnime to AniWatch\n- Fix Kaas",
 
   "pcnum": 600,
   "pcver": "6.0.0",
